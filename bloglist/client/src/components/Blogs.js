@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch} from 'react-redux';
 import Blog from "./Blog";
+import { initializeBlogs, likeBlog, deleteBlog } from "../redux";
 
-const Blogs = ({ blogs, updateLikes, deleteBlog }) => {
+const Blogs = () => {
+  const dispatch = useDispatch();
+  const blogs = useSelector(state => state.blogs);
+  
+  useEffect(() => {
+    dispatch(initializeBlogs());
+  }, [dispatch]);
+
   const blogOnChangeHandler = (e) => {
     e.preventDefault();
 
@@ -20,12 +29,14 @@ const Blogs = ({ blogs, updateLikes, deleteBlog }) => {
 
     //Update number of likes
     if (target.className === "like-blog") {
-      updateLikes(target.dataset.id);
+      const blogId = target.dataset.id;
+      const numLikes = blogs.find(({ id }) => id === blogId).likes;
+      dispatch(likeBlog(blogId, numLikes + 1));
     }
 
     //Delete a blog
     if (target.className === "delete-blog") {
-      deleteBlog(target.dataset.id);
+      dispatch(deleteBlog(target.dataset.id));
     }
   };
 

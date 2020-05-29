@@ -1,65 +1,98 @@
-import blogService from '../services/blogs';
-
-const TOKEN = null; //get state from redux store.
+import blogService from "../services/blogs";
+import { success, failure, hideLater } from "./notificationReducer";
 
 //ACTIONS
-const INIT_BLOGS = 'INIT_BLOGS';
-const CREATE_BLOG = 'CREATE_BLOG';
-const LIKE_BLOG = 'LIKE_BLOG';
-const DELETE_BLOG = 'DELETE_BLOG';
+const INIT_BLOGS = "INIT_BLOGS";
+const CREATE_BLOG = "CREATE_BLOG";
+const LIKE_BLOG = "LIKE_BLOG";
+const DELETE_BLOG = "DELETE_BLOG";
 
 //ACTION CREATORS
-export const initializeBlogs = () => dispatch => {
-    blogService.getAllBlogs()
-    .then(blogs => {
-        dispatch({
-            type: INIT_BLOGS,
-            data: blogs.data
-        });
-    })
-    .catch(err => {
-        //..dispatch error with notificationReducer ...to be defined
-        console.error(err.name, err.message)
-    })
-}
-
-export const createBlog = blog => dipatch => {
-    blogService.createBlog(blog, TOKEN)
+export const initializeBlogs = () => (dispatch) => {
+  blogService
+    .getAllBlogs()
     .then(({ data }) => {
-        dispatch({
-            type: CREATE_BLOG,
-            data
-        });
-        //show notification
+      dispatch({
+        type: INIT_BLOGS,
+        data,
+      });
     })
-    .catch(err => {
-        //show notification
-        console.error(err.name, error.message);
-    })
-}
-
-export const likeBlog = id => dispatch => {
-    blogService.updateBlog(id, )
+    .catch((err) => {
+      console.error(err.name, err.message);
+    });
 };
 
-const deleteBlog = id => ({
-    type: DELETE_BLOG,
-    id
-});
+export const createBlog = (blog) => (dispatch) => {
+  blogService
+    .createBlog(blog)
+    .then(({ data }) => {
+      dispatch({
+        type: CREATE_BLOG,
+        data,
+      });
+
+      const msg = `New blog titled "${data.title} by ${data.author} added successfully`;
+
+      dispatch(success(msg));
+      dispatch(hideLater());
+    })
+    .catch((err) => {
+      dispatch(failure(err.response.data.error));
+      dispatch(hideLater());
+      console.error(err.name, err.message);
+    });
+};
+
+export const likeBlog = (id, numLikes) => (dispatch) => {
+  blogService
+    .updateBlog(id, { likes: numLikes })
+    .then(({ data }) => {
+      dispatch({
+        type: LIKE_BLOG,
+        data,
+      });
+
+      dispatch(success(`You liked "${data.title}`));
+      dispatch(hideLater());
+    })
+    .catch((err) => {
+      dispatch(failure(err.response.data.error));
+      dispatch(hideLater());
+      console.error(err.name, err.message);
+    });
+};
+
+export const deleteBlog = (id) => (dispatch) => {
+  blogService
+    .deleteBlog(id)
+    .then(() => {
+      dispatch({
+        type: DELETE_BLOG,
+        id,
+      });
+      dispatch(success(`Deleted successfully`));
+      dispatch(hideLater());
+    })
+    .catch((err) => {
+      dispatch(failure(err.response.data.error));
+      dispatch(hideLater());
+      console.error(err.name, err.message);
+    });
+};
 //REDUCER
-const blogReducer = (state = [], action) => {
-    switch(action.type) {
-        case INIT_BLOGS:
-            return action.data;
-        case CREATE_BLOG:
-            return [...state, action.data];
-        case LIKE_BLOG:
-            const nonLikedBlogs = state.filter(blog => blog.id !== action.data.id);
-            return [...nonLikedBlogs, action.data];
-        case DELETE_BLOG:
-            const updatedBlogView = state.filter(blog => blog.id !== action.data.id);
-            return updatedBlogView;
-        default:
-            return state;
-    }
-}
+export const blogReducer = (state = [], action) => {
+  switch (action.type) {
+    case INIT_BLOGS:
+      return action.data;
+    case CREATE_BLOG:
+      return [...state, action.data];
+    case LIKE_BLOG:
+      const nonLikedBlogs = state.filter((blog) => blog.id !== action.data.id);
+      return [...nonLikedBlogs, action.data];
+    case DELETE_BLOG:
+      const updatedBlogView = state.filter((blog) => blog.id !== action.id);
+      return updatedBlogView;
+    default:
+      return state;
+  }
+};

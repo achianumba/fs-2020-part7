@@ -1,4 +1,5 @@
 import loginService from '../services/login';
+import { success, failure, hideLater } from "./notificationReducer";
 
 const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
@@ -8,15 +9,13 @@ export const loginUser = user => dispatch => {
     .then(({ data }) => {
         dispatch({
             type: LOGIN,
-            message: `Welcome, ${data.name}. You've logged in successfully`,
             data
         });
+
+        dispatch(success(`Welcome, ${ data.name }!`))
     })
     .catch(err => {
-        dispatch({
-            type: 'ERROR',
-            message: err.response.data.error
-        });
+        dispatch(failure(err.response.data.error));
     })
 }
 
