@@ -12,11 +12,13 @@ export const loginUser = user => dispatch => {
             data
         });
 
-        dispatch(success(`Welcome, ${ data.name }!`))
+        dispatch(success(`Welcome, ${ data.name }!`));
+        dispatch(hideLater());
     })
     .catch(err => {
         dispatch(failure(err.response.data.error));
-    })
+        dispatch(hideLater());
+    });
 }
 
 export const logoutUser = () => ({

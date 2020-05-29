@@ -4,9 +4,6 @@ const { token } = JSON.parse(localStorage.getItem('user'));
 
 export const getAllBlogs = () => axios.get(baseUrl);
 
-export const loginService = async (credentials) =>
-  await axios.post("/api/login", credentials);
-
 export const createBlog = async (blog) => {
   return await axios.post(baseUrl, blog, {
     headers: { Authorization: `Bearer ${token}` },

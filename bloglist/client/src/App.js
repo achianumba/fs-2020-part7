@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch} from 'react-redux';
 import Blogs from "./components/Blogs";
 import "./App.css";
@@ -11,22 +11,6 @@ import { logoutUser } from "./redux";
 const App = () => {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
-
-  const showMessage = (type, content) => {
-    // setMessage({
-    //   type: type,
-    //   content: content,
-    // });
-
-    setTimeout(
-      () =>
-        // setMessage({
-        //   type: "",
-        //   content: "",
-        // }),
-      5000
-    );
-  };
 
   const logOut = (e) => {
     e.preventDefault();
