@@ -1,5 +1,6 @@
 import loginService from '../services/login';
 import { success, failure, hideLater } from "./notificationReducer";
+import { getUsers } from "../services/users";
 
 const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
@@ -36,6 +37,35 @@ export const userReducer = (
         case LOGOUT:
             localStorage.removeItem('user');
             return localStorage.getItem('user'); 
+        default: return state;
+    }
+}
+
+/*
+========================
+USERS
+========================
+*/
+const INIT_USERS = 'INIT_USERS';
+
+export const initializeUsers = () => dispatch => {
+    getUsers()
+    .then(({ data }) => {
+        dispatch({
+            type: INIT_USERS,
+            data
+        });
+    })
+    .catch(err => {
+        dispatch(failure(err.response.data.error));
+        dispatch(hideLater());
+    });
+}
+
+export const usersReducer = (state = [], action) => {
+    switch(action.type) {
+        case INIT_USERS:
+            return action.data;
         default: return state;
     }
 }

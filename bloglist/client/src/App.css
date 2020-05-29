@@ -86,6 +86,14 @@ input, #login {
   padding: 16px 32px;
 }
 
+nav {
+  margin-right: 32px;
+}
+
+nav > a {
+  padding: 8px 16px;
+}
+
 #site-header > h3 {
   flex: 0 0 auto;
   display: inline-block;

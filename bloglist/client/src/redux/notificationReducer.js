@@ -21,13 +21,13 @@ const hide = () => ({
     type: HIDE
 });
 
-const startTimer = id => ({
-    type: START_TIMER,
-    id
-});
+// const startTimer = id => ({
+//     type: START_TIMER,
+//     id
+// });
 
 export const hideLater = () => (dispatch) => {
-    const timer = setTimeout(() => {
+    setTimeout(() => {
         dispatch(hide())
     }, 10000);
 };
