@@ -32,7 +32,7 @@ const Blogs = ({ blogs, updateLikes, deleteBlog }) => {
   return (
     <div id="blogs" onClick={blogOnChangeHandler}>
       <h1>Blogs</h1>
-      {blogs.map((blog) => (
+      {blogs.sort((a, b) => a.likes < b.likes).map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
     </div>

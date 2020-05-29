@@ -27,4 +27,9 @@ export const deleteBlog = async (blogId, token) => {
   });
 };
 
-export default getAllBlogs;
+export default {
+  getAllBlogs,
+  createBlog,
+  updateBlog,
+  deleteBlog
+}

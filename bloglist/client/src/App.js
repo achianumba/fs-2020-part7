@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch} from 'react-redux';
 import Blogs from "./components/Blogs";
 import {
   getAllBlogs,
@@ -11,15 +12,13 @@ import "./App.css";
 import BlogForm from "./components/BlogForm";
 import Login from "./components/Login";
 import Togglable from "./components/Togglable";
+import { logoutUser } from "./redux";
 
 const App = () => {
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  
   const [blogs, setBlogs] = useState([]);
-
-  const [user, setUser] = useState(null);
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
 
   const [message, setMessage] = useState({
     type: "",
@@ -42,24 +41,9 @@ const App = () => {
     );
   };
 
-  const loginHandler = async (e) => {
-    e.preventDefault();
-
-    try {
-      const login = await loginService(credentials);
-      setCredentials({ username: "", password: "" });
-      localStorage.setItem("user", JSON.stringify(login.data));
-      setUser(login.data);
-      showMessage("success", "Logged in successfully");
-    } catch (err) {
-      showMessage("error", err.response.data.error);
-    }
-  };
-
   const logOut = (e) => {
     e.preventDefault();
-    setUser(null);
-    localStorage.clear();
+    dispatch(logoutUser());
   };
 
   const blogFormRef = React.createRef(); //ref for toggling togglable component  when create-blog button is clicked
@@ -114,12 +98,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem("user"));
-
-    if (userDetails) {
-      setUser(userDetails);
-    }
-
     getAllBlogs().then((blogs) => {
       const sortedBlogs = blogs.sort((a, b) => a.likes < b.likes);
       setBlogs(sortedBlogs);
@@ -157,11 +135,7 @@ const App = () => {
           />
         </div>
       ) : (
-        <Login
-          login={loginHandler}
-          credentials={credentials}
-          setCredentials={setCredentials}
-        />
+        <Login />
       )}
     </>
   );
