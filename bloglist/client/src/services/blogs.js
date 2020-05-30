@@ -1,6 +1,8 @@
 import axios from "axios";
+
 const baseUrl = "/api/blogs";
-const { token } = JSON.parse(localStorage.getItem('user'));
+let userDetails = JSON.parse(localStorage.getItem('user'));
+let token = userDetails ? userDetails.token : null;
 
 export const getAllBlogs = () => axios.get(baseUrl);
 
