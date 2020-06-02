@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Blogs from "./components/Blogs";
 import Blog from "./components/Blog";
 import "./App.css";
@@ -10,11 +10,16 @@ import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
 import User from "./components/User";
+import Navigation from "./components/Navigation";
 import { logoutUser, initializeUsers, initializeBlogs } from "./redux";
 
 const App = () => {
   const dispatch = useDispatch();
-  const { user, users, blogs } = useSelector((state) => ({ user: state.user, users: state.users, blogs: state.blogs }));
+  const { user, users, blogs } = useSelector((state) => ({
+    user: state.user,
+    users: state.users,
+    blogs: state.blogs,
+  }));
 
   const userRoute = useRouteMatch("/users/:id");
   const userRouteId = userRoute ? userRoute.params.id : null;
@@ -39,50 +44,45 @@ const App = () => {
   return (
     <>
       <Notification />
+      {!user && <Login />}
       {user && (
-        <header id="site-header">
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/users">Users</Link>
-          </nav>
-          <h3>{user && user.name}</h3>
-          <button onClick={logOut}>Log out</button>
-        </header>
+        <>
+          <header id="site-header">
+            <Navigation />
+            <h3>{user && user.name}</h3>
+            <button onClick={logOut}>Log out</button>
+          </header>
+          <Switch>
+            <Route path="/users/:id">
+              <User user={matchedUser} />
+            </Route>
+
+            <Route path="/users">
+              <Users users={users} />
+            </Route>
+
+            <Route path="/blogs/:id">
+              <Blog blog={matchedBlog} />
+            </Route>
+
+            <Route path="/">
+              <div>
+                <Togglable
+                  showLabel="Create Blog"
+                  hideLabel="Cancel"
+                  ref={blogFormRef}
+                >
+                  <div id="form-blog">
+                    <BlogForm />
+                  </div>
+                </Togglable>
+
+                <Blogs blogs={blogs} />
+              </div>
+            </Route>
+          </Switch>
+        </>
       )}
-      
-      <Switch>
-        <Route path="/users/:id">
-          <User user={matchedUser} />
-        </Route>
-
-        <Route path="/users">
-          <Users users={users} />
-        </Route>
-
-        <Route path="/blogs/:id">
-          <Blog blog={ matchedBlog } />
-        </Route>
-        
-        <Route path="/">
-          {user !== null ? (
-            <div>
-              <Togglable
-                showLabel="Create Blog"
-                hideLabel="Cancel"
-                ref={blogFormRef}
-              >
-                <div id="form-blog">
-                  <BlogForm />
-                </div>
-              </Togglable>
-
-              <Blogs blogs={ blogs } />
-            </div>
-          ) : (
-            <Login />
-          )}
-        </Route>
-      </Switch>
     </>
   );
 };
