@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import Blogs from "./components/Blogs";
+import Blog from "./components/Blog";
 import "./App.css";
 import BlogForm from "./components/BlogForm";
 import Login from "./components/Login";
@@ -9,15 +10,19 @@ import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
 import User from "./components/User";
-import { logoutUser, initializeUsers } from "./redux";
+import { logoutUser, initializeUsers, initializeBlogs } from "./redux";
 
 const App = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const users = useSelector((state) => state.users);
+  const { user, users, blogs } = useSelector((state) => ({ user: state.user, users: state.users, blogs: state.blogs }));
+
   const userRoute = useRouteMatch("/users/:id");
   const userRouteId = userRoute ? userRoute.params.id : null;
   const matchedUser = users.find(({ id }) => id === userRouteId);
+
+  const blogRoute = useRouteMatch("/blogs/:id");
+  const blogRouteId = blogRoute ? blogRoute.params.id : null;
+  const matchedBlog = blogs.find(({ id }) => id === blogRouteId);
 
   const logOut = (e) => {
     e.preventDefault();
@@ -27,6 +32,7 @@ const App = () => {
   const blogFormRef = React.createRef(); //ref for toggling togglable component  when create-blog button is clicked
 
   useEffect(() => {
+    dispatch(initializeBlogs());
     dispatch(initializeUsers());
   }, [dispatch]);
 
@@ -43,6 +49,7 @@ const App = () => {
           <button onClick={logOut}>Log out</button>
         </header>
       )}
+      
       <Switch>
         <Route path="/users/:id">
           <User user={matchedUser} />
@@ -52,6 +59,10 @@ const App = () => {
           <Users users={users} />
         </Route>
 
+        <Route path="/blogs/:id">
+          <Blog blog={ matchedBlog } />
+        </Route>
+        
         <Route path="/">
           {user !== null ? (
             <div>
@@ -65,7 +76,7 @@ const App = () => {
                 </div>
               </Togglable>
 
-              <Blogs />
+              <Blogs blogs={ blogs } />
             </div>
           ) : (
             <Login />

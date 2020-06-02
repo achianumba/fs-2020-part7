@@ -2,6 +2,7 @@ import React from "react";
 
 const User = ({ user }) => {
     if (!user) return <>Not found</>
+
     return (
         <div>
             <h2>{user.name}</h2>
