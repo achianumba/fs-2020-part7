@@ -6,6 +6,7 @@ const blogSchema = new Schema({
   author: String,
   url: String,
   likes: { type: Number, default: 0 },
+  comments: [String],
   user: {
     type: Schema.Types.ObjectId,
     ref: "User"
@@ -72,6 +73,11 @@ const deleteAllBlogs = async () => {
   return closeDb();
 };
 
+const addComment = (id, newComment) => {
+  callDb();
+  return Blog.findByIdAndUpdate(id, {$push: { comments: newComment }}, { new: true });
+};
+
 module.exports = {
   getAllBlogs,
   getBlogById,
@@ -79,5 +85,6 @@ module.exports = {
   updateBlog,
   deleteBlog,
   deleteAllBlogs,
+  addComment,
   closeDb,
 };

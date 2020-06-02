@@ -6,6 +6,7 @@ const {
   newBlog,
   updateBlog,
   getBlogById,
+  addComment,
   deleteBlog,
 } = require("../models/blog");
 const { updateUserById } = require("../models/user");
@@ -40,7 +41,7 @@ blogRouter.post("/", async (request, response) => {
       if (err) {
         return response.status(401).json({ error: "Unauthorized user" });
       }
-      
+
       //add user field to blog
       blog.user = decodedToken.id;
       //give logged in users access
@@ -97,14 +98,15 @@ blogRouter.put("/:id", async (request, response) => {
   //update without authorization
   const blog = await getBlogById(blogId);
 
-  if (blog === null) return response.status(404).json({ error: "Blog not found" });
+  if (blog === null)
+    return response.status(404).json({ error: "Blog not found" });
 
   let updatedBlog = await updateBlog(blogId, request.body);
   response.json(updatedBlog);
 });
 /* 
 =============================
-DELETE USER
+DELETE BLOG
 =============================
  */
 blogRouter.delete("/:id", async (request, response) => {
@@ -119,13 +121,13 @@ blogRouter.delete("/:id", async (request, response) => {
 
   verify(token, process.env.SECRET, async (err, decodedToken) => {
     const unauthorized = { error: "You are not allowed to delete this blog" };
-    
+
     if (err) return response.status(401).json(unauthorized);
 
     const blog = await getBlogById(blogId);
-    
+
     if (!blog) return response.status(404).json({ error: "Blog not found" });
-    
+
     const isCreator = blog.user.toString() === decodedToken.id;
     //if not creator
     if (!isCreator) return response.status(401).json(unauthorized);
@@ -133,6 +135,20 @@ blogRouter.delete("/:id", async (request, response) => {
     await deleteBlog(blogId);
     return response.status(204).end();
   });
+});
+/* 
+=============================
+COMMENT ON BLOG
+=============================
+ */
+blogRouter.post("/:id/comments", async (req, res) => {
+  const { comment } = req.body;
+
+  if (!comment || comment === " ")
+    return res.status(400).json({ error: "Please enter a valid comment" });
+
+  const savedComment = await addComment(req.params.id, comment);
+  res.json(savedComment);
 });
 
 module.exports = blogRouter;
