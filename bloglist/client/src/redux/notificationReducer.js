@@ -41,7 +41,7 @@ export const notificationReducer = (state = { type: '', content: '', timeout: nu
             return { ...state, type: 'success', content: action.content };
         case FAILURE:
             clearTimer(state.timeout);
-            return { ...state, type: 'error', content: action.content };
+            return { ...state, type: 'danger', content: action.content };
         case HIDE:
             clearTimer(state.timeout);
             return { type: '', content: '', timeout: null }
