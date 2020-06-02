@@ -24,9 +24,14 @@ export const deleteBlog = async (blogId) => {
   });
 };
 
+export const createComment = (blogId, comment) => {
+  return axios.post(`${baseUrl}/${blogId}/comments`, { comment });
+}
+
 export default {
   getAllBlogs,
   createBlog,
   updateBlog,
-  deleteBlog
+  deleteBlog,
+  createComment
 }
