@@ -6,7 +6,7 @@ const Notification = () => {
     const notification = useSelector(state => state.notification);console.log(notification.type);
     
   return (
-    <Alert variant={ notification.type } className="text-center">
+    <Alert variant={ notification.type } className="text-center m-0 notification">
       { notification.content !== "" && <p>{notification.content}</p> }
     </Alert>
   );
