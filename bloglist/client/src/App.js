@@ -6,7 +6,6 @@ import Blog from "./components/Blog";
 import "./App.css";
 import BlogForm from "./components/BlogForm";
 import Login from "./components/Login";
-import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
 import User from "./components/User";
@@ -33,9 +32,7 @@ const App = () => {
     e.preventDefault();
     dispatch(logoutUser());
   };
-
-  const blogFormRef = React.createRef(); //ref for toggling togglable component  when create-blog button is clicked
-
+  
   useEffect(() => {
     dispatch(initializeBlogs());
     dispatch(initializeUsers());
@@ -47,7 +44,7 @@ const App = () => {
       {!user && <Login />}
       {user && (
         <>
-          <Navigation user={user} logOut={ logOut } />
+          <Navigation user={user} logOut={logOut} />
           <Switch>
             <Route path="/users/:id">
               <User user={matchedUser} />
@@ -63,16 +60,7 @@ const App = () => {
 
             <Route path="/">
               <div>
-                <Togglable
-                  showLabel="Create Blog"
-                  hideLabel="Cancel"
-                  ref={blogFormRef}
-                >
-                  <div id="form-blog">
-                    <BlogForm />
-                  </div>
-                </Togglable>
-
+                <BlogForm />
                 <Blogs blogs={blogs} />
               </div>
             </Route>
