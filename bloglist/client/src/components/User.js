@@ -1,18 +1,20 @@
 import React from "react";
+import { ListGroup } from "react-bootstrap";
 
 const User = ({ user }) => {
     if (!user) return <>Not found</>
 
     return (
-        <div>
+        <div className="px-5">
             <h2>{user.name}</h2>
-            <ul>
+            <h4>Blogs</h4>
+            <ListGroup>
                 {
                     user.blogs.map(blog => (
-                        <li key={ blog.id }>{blog.title}</li>
+                        <ListGroup.Item action key={ blog.id }>{blog.title}</ListGroup.Item>
                     ))
                 }
-            </ul>
+            </ListGroup>
         </div>
     )
 }
