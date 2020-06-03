@@ -1,3 +1,7 @@
 .login__container {
     min-height: 90vh;
 }
+
+.comment:nth-child(odd) {
+    background-color: #f0f0f0;
+}
