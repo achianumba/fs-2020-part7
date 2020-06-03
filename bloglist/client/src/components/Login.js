@@ -26,13 +26,12 @@ const Login = () => {
             <Form.Control
               minLength="3"
               value={credentials.username}
-              id="username"
               type="text"
               onChange={(e) =>
                 setCredentials({ ...credentials, username: e.target.value })
               }
               required
-              autoFocus="true"
+              autoFocus={ true }
             />
           </Form.Group>
 

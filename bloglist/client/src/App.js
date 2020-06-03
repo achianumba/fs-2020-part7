@@ -47,11 +47,7 @@ const App = () => {
       {!user && <Login />}
       {user && (
         <>
-          <header id="site-header">
-            <Navigation />
-            <h3>{user && user.name}</h3>
-            <button onClick={logOut}>Log out</button>
-          </header>
+          <Navigation user={user} logOut={ logOut } />
           <Switch>
             <Route path="/users/:id">
               <User user={matchedUser} />
