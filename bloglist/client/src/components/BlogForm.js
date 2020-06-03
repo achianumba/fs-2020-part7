@@ -29,7 +29,7 @@ const BlogForm = () => {
           <Collapse in={open}>
             <Form onSubmit={saveBlog} id="form-blog">
               <Form.Group controlId="create-blog-title">
-              <Form.Label htmlFor="create-blog-title">Title</Form.Label>
+              <Form.Label>Title</Form.Label>
               <Form.Control
                 onChange={(e) => setBlog({ ...blog, title: e.target.value })}
                 value={blog.title}
@@ -37,7 +37,7 @@ const BlogForm = () => {
               </Form.Group>
 
               <Form.Group controlId="create-blog-author">
-              <Form.Label htmlFor="create-blog-author">Author</Form.Label>
+              <Form.Label>Author</Form.Label>
               <Form.Control
                 onChange={(e) => setBlog({ ...blog, author: e.target.value })}
                 value={blog.author}
